@@ -1,0 +1,39 @@
+version: '3'
+services:
+  db:
+    image: 'postgres:12'
+    container_name: postgres_db_stc-31
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=123
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+
+  app:
+    container_name: agregator-shops-app
+    build:
+      context: ./
+      dockerfile: Dockerfile
+
+    environment:
+      - PORT=8080
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=123
+
+    image: 'my-java-app'
+    ports:
+      - 8080:8080
+    links:
+      - db
+    depends_on:
+      - db
+
+
+
+volumes:
+  db-data:
